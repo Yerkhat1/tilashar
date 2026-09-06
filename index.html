@@ -6,32 +6,39 @@
 <title>Tілашар — learn Kazakh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg1:#eef1f9; --bg2:#e7ebf6; --panel:#ffffff; --panel2:#f7f9fe;
-  --ink:#141726; --muted:#6b7286; --faint:#9aa1b5; --line:#e6e9f4;
-  --brand:#10c98d; --brand2:#0aa877; --brandsoft:#e3f9f1;
-  --violet:#7c5cff; --violetsoft:#efeaff;
-  --gold:#f6b40a; --flame:#ff6b35; --blue:#4f7cff; --bluesoft:#e9f0ff;
-  --red:#f0424a; --redsoft:#fdeaeb;
-  --track:#e9ecf6; --shadow:0 12px 30px rgba(23,28,54,.10); --shadow2:0 6px 16px rgba(23,28,54,.08);
-  --node:#ffffff; --lock:#c6cbdb; --glow1:rgba(16,201,141,.16); --glow2:rgba(124,92,255,.14);
+  --bg1:#faf4e8; --bg2:#f3e9d6; --panel:#fffdf8; --panel2:#f7efe1;
+  --ink:#241f18; --muted:#8a7f6d; --faint:#b6ab97; --line:#ece1cd;
+  --brand:#1497c0; --brand2:#0f7699; --brandsoft:#dcf1f7;      /* Kazakh sky blue */
+  --ok:#2f9e6f; --ok2:#237a54; --oksoft:#dcf3e8;               /* success green */
+  --violet:#6d5bd8; --violetsoft:#eae6fb;                      /* practice */
+  --gold:#eaa10a; --goldsoft:#fbedcb; --flame:#f0692e;
+  --blue:#1497c0; --bluesoft:#dcf1f7;
+  --red:#e05a45; --redsoft:#fae4de;                            /* terracotta */
+  --track:#ece0cb; --shadow:0 16px 36px rgba(90,64,20,.12); --shadow2:0 6px 16px rgba(90,64,20,.08);
+  --node:#fffdf8; --lock:#cdc2ad; --glow1:rgba(20,151,192,.16); --glow2:rgba(234,161,10,.16);
+  --orn:rgba(20,151,192,.28);
 }
 :root[data-theme="dark"], :root.dark{
-  --bg1:#0a0d18; --bg2:#0e1220; --panel:#161b2e; --panel2:#1b2136;
-  --ink:#eef1fb; --muted:#98a0bd; --faint:#6b7391; --line:#252b43;
-  --brandsoft:#0f3327; --violetsoft:#241a4d; --bluesoft:#152447; --redsoft:#3a1c22;
-  --track:#222842; --shadow:0 18px 44px rgba(0,0,0,.5); --shadow2:0 8px 20px rgba(0,0,0,.4);
-  --node:#1a2038; --lock:#3a4160; --glow1:rgba(16,201,141,.22); --glow2:rgba(124,92,255,.20);
+  --bg1:#131009; --bg2:#181309; --panel:#2a231b; --panel2:#332b21;
+  --ink:#f7f0e2; --muted:#b6aa93; --faint:#847865; --line:#3d3327;
+  --brandsoft:#123c48; --oksoft:#143a2c; --violetsoft:#282149; --bluesoft:#123c48;
+  --goldsoft:#453213; --redsoft:#45261d;
+  --track:#3b3022; --shadow:0 22px 48px rgba(0,0,0,.6); --shadow2:0 10px 24px rgba(0,0,0,.45);
+  --node:#2a231b; --lock:#574836; --glow1:rgba(20,151,192,.26); --glow2:rgba(234,161,10,.22);
+  --orn:rgba(234,161,10,.32);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg1:#0a0d18; --bg2:#0e1220; --panel:#161b2e; --panel2:#1b2136;
-    --ink:#eef1fb; --muted:#98a0bd; --faint:#6b7391; --line:#252b43;
-    --brandsoft:#0f3327; --violetsoft:#241a4d; --bluesoft:#152447; --redsoft:#3a1c22;
-    --track:#222842; --shadow:0 18px 44px rgba(0,0,0,.5); --shadow2:0 8px 20px rgba(0,0,0,.4);
-    --node:#1a2038; --lock:#3a4160; --glow1:rgba(16,201,141,.22); --glow2:rgba(124,92,255,.20);
+    --bg1:#171310; --bg2:#1e1813; --panel:#241d17; --panel2:#2a221a;
+    --ink:#f4ecdd; --muted:#a99d89; --faint:#7c7160; --line:#352b21;
+    --brandsoft:#0e3540; --oksoft:#123528; --violetsoft:#231d43; --bluesoft:#0e3540;
+    --goldsoft:#3a2c10; --redsoft:#3d221b;
+    --track:#302518; --shadow:0 20px 46px rgba(0,0,0,.55); --shadow2:0 8px 20px rgba(0,0,0,.42);
+    --node:#241d17; --lock:#4a3d2c; --glow1:rgba(20,151,192,.22); --glow2:rgba(234,161,10,.20);
+    --orn:rgba(234,161,10,.30);
   }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -39,13 +46,13 @@ html,body{margin:0;height:100%}
 body{
   font-family:Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--ink); background:var(--bg1);
-  background-image:radial-gradient(60% 40% at 15% 0%,var(--glow1),transparent 60%),
-                   radial-gradient(50% 40% at 95% 8%,var(--glow2),transparent 60%),
+  background-image:radial-gradient(70% 46% at 12% -2%,var(--glow1),transparent 62%),
+                   radial-gradient(56% 42% at 96% 6%,var(--glow2),transparent 62%),
                    linear-gradient(var(--bg1),var(--bg2));
   background-attachment:fixed;
   -webkit-font-smoothing:antialiased; overscroll-behavior:none; user-select:none;
 }
-h1,h2,h3,.brandfont{font-family:"Baloo 2",Nunito,sans-serif}
+h1,h2,h3,.brandfont{font-family:"Fraunces","Georgia",serif;letter-spacing:-.01em}
 .app{max-width:540px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;position:relative}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .hidden{display:none!important}
@@ -67,14 +74,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ---------- home ---------- */
 .home{padding:4px 16px 130px}
-.greet{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
-  border-radius:26px;padding:18px 20px;box-shadow:var(--shadow);margin:6px 0 8px;position:relative;overflow:hidden}
-.greet::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;
-  background:radial-gradient(circle,var(--glow1),transparent 70%)}
+.greet{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#18a6cd 0%,#0f7a9c 68%,#0d6a89 100%);
+  border-radius:26px;padding:20px 22px 26px;box-shadow:0 18px 38px var(--glow1);margin:6px 0 12px;position:relative;overflow:hidden}
+.greet::before{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;opacity:.9;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='22'%3E%3Cg fill='none' stroke='rgba(255,255,255,.30)' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 20 C3 5 13 5 13 13 C13 5 23 5 23 20'/%3E%3Cpath d='M25 20 C25 5 35 5 35 13 C35 5 45 5 45 20'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-position:center bottom}
+.greet::after{content:"";position:absolute;right:-34px;top:-40px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%)}
 .greet .hi{flex:1;z-index:1}
-.greet .hi h1{margin:0;font-size:23px;font-weight:800;letter-spacing:-.3px}
-.greet .hi p{margin:3px 0 0;color:var(--muted);font-weight:700;font-size:13.5px}
-.mascot{width:82px;height:82px;flex:none;z-index:1}
+.greet .hi h1{margin:0;font-size:26px;font-weight:600;color:#fff;letter-spacing:-.01em}
+.greet .hi p{margin:5px 0 0;color:rgba(255,255,255,.82);font-weight:700;font-size:13.5px}
+.mascot{width:80px;height:80px;flex:none;z-index:1;filter:drop-shadow(0 8px 14px rgba(0,0,0,.22))}
 .goalcard{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
   border-radius:22px;padding:14px 18px;box-shadow:var(--shadow2);margin-bottom:10px}
 .ring{width:58px;height:58px;flex:none;position:relative}
@@ -82,8 +92,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ring .rc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px}
 .goalcard .gt{flex:1}
 .goalcard .gt b{font-size:15px;font-weight:900} .goalcard .gt span{display:block;color:var(--muted);font-weight:700;font-size:12.5px;margin-top:2px}
-.lvlbadge{background:var(--violetsoft);color:var(--violet);font-weight:900;font-size:13px;border-radius:12px;padding:8px 12px;text-align:center;line-height:1.1}
-.lvlbadge small{display:block;font-size:9px;letter-spacing:.1em;opacity:.8}
+.lvlbadge{background:var(--goldsoft);color:var(--gold);font-weight:900;font-size:15px;border-radius:14px;padding:8px 13px;text-align:center;line-height:1.1}
+.lvlbadge small{display:block;font-size:9px;letter-spacing:.12em;opacity:.85;font-weight:800}
 
 .practice{display:flex;align-items:center;gap:14px;width:100%;background:var(--panel);border:1px solid var(--line);
   border-radius:22px;padding:14px 18px;box-shadow:var(--shadow2);margin-bottom:6px;text-align:left;transition:transform .1s}
@@ -138,7 +148,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   font-size:18px;font-weight:800;text-align:center;transition:transform .07s;min-height:58px;display:flex;align-items:center;justify-content:center}
 .opt:active{transform:translateY(2px)}
 .opt.sel{border-color:var(--blue);background:var(--bluesoft)}
-.opt.good{border-color:var(--brand);background:var(--brandsoft);color:var(--brand2)}
+.opt.good{border-color:var(--ok);background:var(--oksoft);color:var(--ok2)}
 .opt.bad{border-color:var(--red);background:var(--redsoft);color:var(--red)}
 .opt.dim{opacity:.45}
 .typebox{width:100%;font-family:inherit;font-size:20px;font-weight:800;color:var(--ink);background:var(--panel);
@@ -165,25 +175,25 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 .grow{flex:1;min-height:14px}
 .foot{position:sticky;bottom:0;padding:14px 0 20px;background:linear-gradient(transparent,var(--bg2) 30%)}
-.cta{width:100%;padding:17px;border-radius:16px;font-size:17px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;
-  background:var(--brand);color:#fff;border-bottom:4px solid var(--brand2);transition:.08s}
-.cta:active{transform:translateY(2px);border-bottom-width:2px}
-.cta:disabled{background:var(--track);color:var(--faint);border-bottom-color:var(--line)}
-.cta.skip{background:transparent;color:var(--faint);border:none;text-transform:none;font-weight:800;padding:12px}
+.cta{width:100%;padding:17px;border-radius:18px;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  background:linear-gradient(180deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 10px 22px var(--glow1);transition:.1s}
+.cta:active{transform:translateY(2px);box-shadow:0 3px 9px var(--glow1)}
+.cta:disabled{background:var(--track);color:var(--faint);box-shadow:none}
+.cta.skip{background:transparent;color:var(--faint);box-shadow:none;text-transform:none;font-weight:800;padding:12px}
 
 /* feedback banner */
 .banner{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:18px 16px 26px;transform:translateY(120%);
   transition:transform .3s cubic-bezier(.2,.9,.3,1)}
 .banner.show{transform:translateY(0)}
 .banner .in{max-width:540px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.banner.ok{background:var(--brandsoft)} .banner.no{background:var(--redsoft)}
+.banner.ok{background:var(--oksoft)} .banner.no{background:var(--redsoft)}
 .banner .fico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff}
-.banner.ok .fico{background:var(--brand)} .banner.no .fico{background:var(--red)}
-.banner h3{margin:0;font-size:18px;font-weight:900}.banner.ok h3{color:var(--brand2)}.banner.no h3{color:var(--red)}
+.banner.ok .fico{background:var(--ok)} .banner.no .fico{background:var(--red)}
+.banner h3{margin:0;font-size:18px;font-weight:800}.banner.ok h3{color:var(--ok2)}.banner.no h3{color:var(--red)}
 .banner p{margin:1px 0 0;font-weight:800;font-size:14px}
-.banner .cont{margin-left:auto;padding:14px 26px;border-radius:14px;font-weight:900;font-size:15px;text-transform:uppercase;color:#fff}
-.banner.ok .cont{background:var(--brand);border-bottom:4px solid var(--brand2)}
-.banner.no .cont{background:var(--red);border-bottom:4px solid #c62e35}
+.banner .cont{margin-left:auto;padding:14px 26px;border-radius:14px;font-weight:800;font-size:15px;text-transform:uppercase;color:#fff}
+.banner.ok .cont{background:linear-gradient(180deg,var(--ok),var(--ok2))}
+.banner.no .cont{background:linear-gradient(180deg,var(--red),#bf4a38)}
 
 /* summary */
 .summary{padding:36px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:86vh}
@@ -409,23 +419,36 @@ const sfxLevel=()=>beep([[523,0.1],[659,0.1],[784,0.1],[1046,0.14],[1318,0.24]])
 function speak(txt){try{if(S.muted)return;const u=new SpeechSynthesisUtterance(txt);u.lang="kk-KZ";u.rate=.82;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
 
 /* ---------------- MASCOT (inline SVG snow leopard) ---------------- */
-function mascotSVG(){return `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
-  <defs><radialGradient id="mg" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#d9e2f2"/></radialGradient></defs>
+function mascotSVG(){return `<svg viewBox="0 0 100 104" width="100%" height="100%" aria-hidden="true">
+  <defs><radialGradient id="mg" cx="50%" cy="36%" r="68%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e7edf7"/></radialGradient></defs>
+  <ellipse cx="50" cy="99" rx="25" ry="4.5" fill="rgba(0,0,0,.14)"/>
   <g class="mbob">
-   <ellipse cx="50" cy="86" rx="20" ry="5" fill="rgba(0,0,0,.10)"/>
-   <path d="M26 34 L20 16 L38 28 Z" fill="#cdd7ea"/><path d="M74 34 L80 16 L62 28 Z" fill="#cdd7ea"/>
-   <path d="M28 32 L24 21 L37 29 Z" fill="#7c5cff"/><path d="M72 32 L76 21 L63 29 Z" fill="#7c5cff"/>
-   <ellipse cx="50" cy="52" rx="30" ry="28" fill="url(#mg)" stroke="#c3cee2" stroke-width="1.5"/>
-   <circle cx="34" cy="44" r="2.2" fill="#b9c4dc"/><circle cx="66" cy="60" r="2.2" fill="#b9c4dc"/>
-   <circle cx="70" cy="45" r="1.8" fill="#b9c4dc"/><circle cx="30" cy="60" r="1.8" fill="#b9c4dc"/>
-   <g class="meyes"><ellipse cx="39" cy="50" rx="6" ry="7.5" fill="#16324a"/><ellipse cx="61" cy="50" rx="6" ry="7.5" fill="#16324a"/>
-     <circle cx="41" cy="47.5" r="2" fill="#fff"/><circle cx="63" cy="47.5" r="2" fill="#fff"/></g>
-   <path d="M46 62 Q50 66 54 62" fill="#f6a6b6"/>
-   <path d="M50 60 L50 63 M50 63 Q45 66 42 64 M50 63 Q55 66 58 64" stroke="#16324a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+   <path d="M66 86 Q90 82 86 60 Q84 50 76 53" fill="none" stroke="#e7edf7" stroke-width="11" stroke-linecap="round"/>
+   <circle cx="77" cy="52" r="6" fill="#d7e0ef"/>
+   <ellipse cx="50" cy="82" rx="21" ry="18" fill="url(#mg)" stroke="#cdd8ea" stroke-width="1.5"/>
+   <ellipse cx="40" cy="96" rx="8" ry="5.5" fill="#fff" stroke="#cdd8ea" stroke-width="1.2"/>
+   <ellipse cx="60" cy="96" rx="8" ry="5.5" fill="#fff" stroke="#cdd8ea" stroke-width="1.2"/>
+   <path d="M40 94v4M60 94v4" stroke="#cdd8ea" stroke-width="1"/>
+   <circle cx="42" cy="80" r="2" fill="none" stroke="#c6d2e6" stroke-width="1.4"/>
+   <circle cx="58" cy="80" r="2" fill="none" stroke="#c6d2e6" stroke-width="1.4"/>
+   <path d="M28 30 L22 8 L44 24 Z" fill="#dbe3f0"/><path d="M72 30 L78 8 L56 24 Z" fill="#dbe3f0"/>
+   <path d="M30 28 L26 14 L40 25 Z" fill="#f6a6b6"/><path d="M70 28 L74 14 L60 25 Z" fill="#f6a6b6"/>
+   <circle cx="50" cy="46" r="27" fill="url(#mg)" stroke="#cdd8ea" stroke-width="1.6"/>
+   <path d="M31 34q3-3 6 0" stroke="#c6d2e6" stroke-width="1.4" fill="none"/>
+   <path d="M63 34q3-3 6 0" stroke="#c6d2e6" stroke-width="1.4" fill="none"/>
+   <circle cx="30" cy="48" r="1.7" fill="#c6d2e6"/><circle cx="70" cy="48" r="1.7" fill="#c6d2e6"/>
+   <circle cx="36" cy="55" r="5" fill="#f6a6b6" opacity=".35"/><circle cx="64" cy="55" r="5" fill="#f6a6b6" opacity=".35"/>
+   <g class="meyes"><ellipse cx="40" cy="46" rx="6" ry="8" fill="#26303f"/><ellipse cx="60" cy="46" rx="6" ry="8" fill="#26303f"/>
+     <circle cx="42" cy="43" r="2" fill="#fff"/><circle cx="62" cy="43" r="2" fill="#fff"/></g>
+   <path d="M46.5 53 L53.5 53 L50 57 Z" fill="#e78ba0"/>
+   <path d="M50 57V60M50 60Q45 63 42 60M50 60Q55 63 58 60" stroke="#26303f" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+   <path d="M24 52 L34 53M24 57 L34 56M76 52 L66 53M76 57 L66 56" stroke="#cdd8ea" stroke-width="1.2" stroke-linecap="round"/>
+   <path d="M34 68 Q50 76 66 68" stroke="#eaa10a" stroke-width="3" fill="none" stroke-linecap="round"/>
+   <circle cx="50" cy="73" r="3" fill="#eaa10a"/>
   </g></svg>`;}
-const mascotCSS=`<style>.mbob{transform-origin:50px 60px;animation:mb 3s ease-in-out infinite}
+const mascotCSS=`<style>.mbob{transform-origin:50px 70px;animation:mb 3.2s ease-in-out infinite}
 @keyframes mb{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
-.meyes{animation:blink 4.5s infinite}@keyframes blink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(.1)}}</style>`;
+.meyes{transform-origin:50px 46px;animation:blink 4.5s infinite}@keyframes blink{0%,95%,100%{transform:scaleY(1)}97.5%{transform:scaleY(.1)}}</style>`;
 
 /* ---------------- TOP + settings ---------------- */
 function paintTop(){$("#tStreak").textContent=S.streak;$("#tXp").textContent=S.xp;
