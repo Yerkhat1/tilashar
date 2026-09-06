@@ -4,6 +4,9 @@ A polished, game-first web app that teaches Kazakh, built by collecting the best
 mechanic from each leading language app into one product. English **and** Russian
 interface. Mascot: Barys, the snow leopard (Kazakhstan's national animal).
 
+**Live:** https://tilashar-virid.vercel.app
+**Repo:** https://github.com/Yerkhat1/tilashar
+
 ## Run it
 Local preview: `.claude/launch.json` name `tilashar` (port 8130), or open `index.html`
 in any browser. Single self-contained file, no build step, no dependencies, works offline.
@@ -28,6 +31,11 @@ in any browser. Single self-contained file, no build step, no dependencies, work
 7. **Match pairs** — Quizlet-style tap-matching mini-game
 8. **Sentence build** — assemble the translation from word tiles
 
+Plus a global **Practice / Review** mode (home card): pulls every word whose SRS due
+date has arrived, across all units, mixes exercise types + a pairs game, and reschedules
+each word on the way out. This is the actual payoff of the spaced-repetition system —
+per-unit lessons alone never resurface a due word.
+
 ## Systems
 - **Spaced repetition (SM-2 lite):** every word carries `strength` (0–6), `ease`, an
   `interval` and a `due` timestamp. A correct answer grows the interval (1 → 3 → ease-scaled)
@@ -48,9 +56,12 @@ in any browser. Single self-contained file, no build step, no dependencies, work
   `sessions`; RLS so content is world-readable and each user's state is private. The app runs
   on `localStorage` today; moving to Supabase is a data-layer swap, not a rewrite.
 
-## Not done here (needs a go)
-- **Live URL / deploy:** Vercel + Supabase must be authorised in an interactive session, and
-  a public push is an outward action → awaiting a mentor "go".
+## Shipped / still open
+- **Live URL:** DONE — deployed to Vercel (team `justet`) at https://tilashar-virid.vercel.app,
+  public, verified running. Repo: https://github.com/Yerkhat1/tilashar. Redeploy: `vercel deploy --prod`
+  from a checkout, or push to the repo.
+- **Supabase backend:** not wired yet — the app runs on `localStorage`. `schema.sql` is ready to
+  apply; connecting it needs the Supabase project authorised in an interactive session.
 - **Content depth:** 6 units is a real, playable slice, not the full course. More units, the
   okulyk.kz book material, grammar tips, and native-speaker audio recordings are additive on
   the same data shape.
