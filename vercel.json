@@ -1,0 +1,15 @@
+{
+  "headers": [
+    {
+      "source": "/audio/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "audio/mp4" },
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
+    },
+    {
+      "source": "/assets/audio-manifest.json",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300" }]
+    }
+  ]
+}

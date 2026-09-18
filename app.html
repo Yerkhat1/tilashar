@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Тілашар — уроки казахского языка</title>
+<meta name="description" content="Уроки казахского языка: 20 тем, 185 слов, интервальное повторение, аудио и мини-игры." />
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://tilashar-virid.vercel.app/app.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#00A6D6" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/ui.css">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div class="frame">
+
+  <!-- ══ AUTH ══════════════════════════════════════════════════ -->
+  <section class="sheet hidden" id="scAuth">
+    <div class="sheet__head">
+      <div class="sheet__mascot a-float" id="authMascot"></div>
+      <h2 id="authTitle">Кіру</h2>
+      <p id="authSub">Сохраняй прогресс и продолжай с любого места</p>
+    </div>
+
+    <div class="formerr" id="authErr"></div>
+
+    <form id="authForm" autocomplete="on" novalidate>
+      <label class="field" id="fName" hidden>
+        <span class="field__label" id="lblName">Имя</span>
+        <input class="field__input" id="inName" type="text" autocomplete="name" placeholder="Айдос">
+        <span class="field__error" id="erName"></span>
+      </label>
+      <label class="field" id="fEmail">
+        <span class="field__label" id="lblEmail">Почта</span>
+        <input class="field__input" id="inEmail" type="email" autocomplete="email" placeholder="aidos@mail.kz" inputmode="email">
+        <span class="field__error" id="erEmail"></span>
+      </label>
+      <label class="field" id="fPass">
+        <span class="field__label" id="lblPass">Пароль</span>
+        <input class="field__input" id="inPass" type="password" autocomplete="current-password" placeholder="••••••••">
+        <span class="field__error" id="erPass"></span>
+      </label>
+      <button class="btn btn--upper" type="submit" id="authGo">Войти</button>
+    </form>
+
+    <p class="altline"><span id="altTxt">Нет аккаунта?</span> <button type="button" id="altBtn">Создать</button></p>
+    <button class="btn btn--ghost" type="button" id="guestBtn" style="margin-top:16px">Продолжить как гость</button>
+    <p class="formnote" id="authNote">Аккаунт пока хранится на этом устройстве. Синхронизация между устройствами появится вместе с сервером.</p>
+  </section>
+
+  <!-- ══ TOP BAR ══════════════════════════════════════════════ -->
+  <header class="topbar hidden" id="topbar">
+    <div class="chip chip--flame"><span>🔥</span><span id="tStreak">0</span></div>
+    <div class="chip chip--gem"><span>💎</span><span id="tXp">0</span></div>
+    <div class="grow"></div>
+    <div class="langtog" id="langtog"><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></div>
+    <button class="iconbtn" id="btnSound" title="Звук">🔊</button>
+    <button class="avatar" id="btnProfile" title="Профиль">?</button>
+  </header>
+
+  <!-- ══ HOME ═════════════════════════════════════════════════ -->
+  <main class="home hidden" id="scHome">
+    <div class="hero">
+      <div class="hero__txt"><h1 id="hiName">Сәлем! 👋</h1><p id="hiSub">Готов к сегодняшнему уроку?</p></div>
+      <div class="hero__mascot" id="homeMascot"></div>
+    </div>
+
+    <div class="rowcard">
+      <div class="ring" id="goalRing"></div>
+      <div class="rowcard__body"><b id="goalTitle">Цель дня</b><span id="goalSub">0 / 40 XP</span></div>
+      <div class="lvl"><small id="lvlCap">УРОВЕНЬ</small><span id="lvlNum">1</span></div>
+    </div>
+
+    <button class="rowcard" type="button" id="btnPractice">
+      <div class="rowcard__ico">🧠</div>
+      <div class="rowcard__body"><b id="prTitle">Повторение</b><span id="prSub">Нечего повторять</span></div>
+      <div class="rowcard__count" id="prCount">0</div>
+    </button>
+
+    <div class="path" id="path"></div>
+  </main>
+
+  <!-- ══ LESSON ═══════════════════════════════════════════════ -->
+  <section class="lesson hidden" id="scLesson">
+    <div class="lhead">
+      <button class="lhead__x" type="button" id="btnQuit" title="Выйти">✕</button>
+      <div class="track"><div class="track__fill" id="pFill" style="width:0"></div></div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+    <div class="stage" id="stage"></div>
+    <div class="foot"><button class="btn btn--upper" type="button" id="cta" disabled>Проверить</button></div>
+  </section>
+
+  <!-- ══ SUMMARY ══════════════════════════════════════════════ -->
+  <section class="summary hidden" id="scSummary">
+    <div class="summary__trophy" id="sTrophy">🏆</div>
+    <h2 id="sTitle">Урок пройден!</h2>
+    <p class="summary__sub" id="sSub"></p>
+    <div class="stats">
+      <div class="stat stat--xp"><div class="stat__cap" id="cXp">XP</div><div class="stat__n" id="sXp">0</div></div>
+      <div class="stat stat--acc"><div class="stat__cap" id="cAcc">Точность</div><div class="stat__n" id="sAcc">0%</div></div>
+      <div class="stat stat--combo"><div class="stat__cap" id="cCombo">Комбо</div><div class="stat__n" id="sCombo">0</div></div>
+    </div>
+    <button class="btn btn--upper" type="button" id="sCont">Продолжить</button>
+  </section>
+
+  <!-- ══ PROFILE ══════════════════════════════════════════════ -->
+  <section class="profile hidden" id="scProfile">
+    <div class="profile__top">
+      <div class="avatar profile__av" id="pAv">?</div>
+      <div><h2 id="pName">Гость</h2><p id="pMail"></p></div>
+      <div class="grow" style="flex:1"></div>
+      <button class="iconbtn" type="button" id="pBack" title="Назад">✕</button>
+    </div>
+    <div class="grid2">
+      <div class="metric"><b id="mXp">0</b><span id="mXpCap">Всего XP</span></div>
+      <div class="metric"><b id="mStreak">0</b><span id="mStreakCap">Дней подряд</span></div>
+      <div class="metric"><b id="mWords">0</b><span id="mWordsCap">Слов выучено</span></div>
+      <div class="metric"><b id="mUnits">0</b><span id="mUnitsCap">Тем пройдено</span></div>
+    </div>
+    <div class="card card--raised" style="margin-bottom:18px">
+      <div class="setrow">
+        <div><b id="setThemeT">Тема</b><span id="setThemeS">Светлая или тёмная</span></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="btnTheme">Авто</button>
+      </div>
+      <div class="setrow">
+        <div><b id="setSoundT">Звук</b><span id="setSoundS">Эффекты и озвучка слов</span></div>
+        <button class="btn btn--ghost btn--sm" type="button" id="btnSound2">Вкл</button>
+      </div>
+      <div class="setrow">
+        <div><b id="setLangT">Язык интерфейса</b><span id="setLangS">Русский или английский</span></div>
+        <div class="langtog" id="langtog2"><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></div>
+      </div>
+    </div>
+    <button class="btn btn--ghost" type="button" id="btnAuthAction">Выйти</button>
+  </section>
+
+</div>
+
+<!-- overlays -->
+<div class="banner" id="banner"><div class="banner__in">
+  <div class="banner__ico" id="bIco">✓</div>
+  <div class="banner__txt"><h3 id="bTitle"></h3><p id="bSub"></p></div>
+  <button class="btn btn--green btn--upper" type="button" id="bCont">Продолжить</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="modalLevel"><div class="modal__card">
+  <div class="big">🎉</div><h2 id="luTitle">Уровень 2!</h2><p id="luSub">Так держать</p>
+  <button class="btn btn--upper" type="button" id="luCont">Отлично</button>
+</div></div>
+
+<!-- supabase-js is only needed when a backend is configured; it loads
+     first so auth.js can see it, and the app falls back to on-device
+     storage if it is missing or the key is wrong. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/mascot.js"></script>
+<script src="assets/content.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

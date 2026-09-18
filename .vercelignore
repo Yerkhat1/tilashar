@@ -1,0 +1,5 @@
+# Source-of-truth and tooling files — not part of the deployed site.
+README.md
+schema.sql
+seed.sql
+tools/

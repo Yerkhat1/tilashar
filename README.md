@@ -1,71 +1,112 @@
 # Tілашар — learn Kazakh
 
-A polished, game-first web app that teaches Kazakh, built by collecting the best
-mechanic from each leading language app into one product. English **and** Russian
-interface. Mascot: Barys, the snow leopard (Kazakhstan's national animal).
+A game-first web app that teaches Kazakh, built by taking the best mechanic from each
+leading language app. Russian **and** English interface. Mascot: Barys, the snow leopard.
 
-**Live:** https://tilashar-virid.vercel.app
-**Repo:** https://github.com/Yerkhat1/tilashar
+**Live:** https://tilashar-virid.vercel.app · **Repo:** https://github.com/Yerkhat1/tilashar
 
 ## Run it
-Local preview: `.claude/launch.json` name `tilashar` (port 8130), or open `index.html`
-in any browser. Single self-contained file, no build step, no dependencies, works offline.
+`.claude/launch.json` → name `tilashar` (port 8130), or serve the folder with any static
+server. No build step, no dependencies, no npm — plain HTML/CSS/JS.
+
+```
+python3 -m http.server 8130
+```
+
+## Files
+```
+index.html                 landing page (the public, indexable one)
+app.html                   the app itself (auth + lessons), noindex
+assets/ui.css              design system: tokens, buttons, cards, answers, animations
+assets/landing.css         landing-only styles
+assets/app.css             app screens
+assets/content.js          the course: 20 units, 185 words, example sentences
+assets/mascot.js           Barys, inline SVG, shared by both pages
+assets/auth.js             auth + progress layer (local today, Supabase-ready)
+assets/app.js              lesson engine, SRS, profile, theme, audio
+assets/audio-manifest.json word id -> clip filename (GENERATED)
+audio/                     206 pre-rendered Kazakh clips, 1.8 MB
+tools/gen-audio-mac.mjs    render clips with the macOS Kazakh voice
+tools/gen-audio.mjs        render clips with Azure, or rebuild the manifest
+vercel.json                content-type + cache headers for the audio
+schema.sql                 Postgres/Supabase schema the app maps onto 1:1
+seed.sql                   the whole course as SQL — GENERATED, see tools/gen-seed.js
+tools/gen-seed.js          regenerates seed.sql from content.js
+robots.txt sitemap.xml manifest.webmanifest favicon.svg og.png
+```
+
+## Design
+The visual system is ported from the Bayan Sulu Kids app (itself built on Duolingo's
+game UI) and recoloured for Tілашар: Nunito 700–900, 3D buttons that press down on their
+own bottom border, hard-offset card shadows, numbered answer badges, spring animations.
+Palette is Tілашар's own — Kazakh sky-blue `#00A6D6` as the brand, gold for rewards,
+green for correct, terracotta-red for wrong. Light and dark, phone-first.
 
 ## What it borrows, and from where
 | Source app | What we took |
 |---|---|
 | **Duolingo** | unit path, streak, hearts/lives, XP + levels, daily-goal ring, combo bonus, lesson-complete celebration, a mascot with personality |
 | **Anki** | real spaced repetition — SM-2-style intervals + ease factor + cross-session due dates, not a single "mastered" flag |
-| **Drops / Rosetta Stone** | picture-association exercises (learn a word from its image, no translation), tight ~5-min sessions, minimalist visuals |
+| **Drops / Rosetta Stone** | picture-association exercises, tight ~5-min sessions |
 | **Quizlet** | the tap-to-match pairs mini-game |
-| **Memrise / Babbel** | listening exercises with native audio, word-tile sentence building |
+| **Memrise / Babbel** | listening exercises, word-tile sentence building |
 | **Clozemaster** | words in real sentence context |
 
-## Eight exercise types (all verified in-browser, no console errors)
-1. **Intro card** — teaches a new word (emoji + Kazakh + meaning + audio) before testing it
-2. **Multiple choice** — Kazakh → meaning
-3. **Reverse** — meaning → Kazakh word
-4. **Listening** — hear the word, pick the meaning
-5. **Picture** — see the image, pick the word (Drops/Rosetta)
-6. **Type** — type the translation
-7. **Match pairs** — Quizlet-style tap-matching mini-game
-8. **Sentence build** — assemble the translation from word tiles
+## Eight exercise types
+Intro card · multiple choice (kk→meaning) · reverse (meaning→kk) · listening · picture ·
+type-the-translation · match pairs · sentence build. Plus a global **Practice/Review**
+mode that pulls every word whose SRS due date has arrived, across all topics.
 
-Plus a global **Practice / Review** mode (home card): pulls every word whose SRS due
-date has arrived, across all units, mixes exercise types + a pairs game, and reschedules
-each word on the way out. This is the actual payoff of the spaced-repetition system —
-per-unit lessons alone never resurface a due word.
+## Kazakh audio
+`speechSynthesis` was the wrong tool: **no browser ships a kk-KZ voice** (0 of 180 on a
+current Mac). Asking for `lang="kk-KZ"` returned `voice: null`, so the engine default —
+Samantha, US English — read the Cyrillic aloud. That is why it sounded broken.
 
-## Systems
-- **Spaced repetition (SM-2 lite):** every word carries `strength` (0–6), `ease`, an
-  `interval` and a `due` timestamp. A correct answer grows the interval (1 → 3 → ease-scaled)
-  and pushes the word out; a miss resets it and brings the word back sooner. Due words are
-  prioritised each lesson, across sessions.
-- **Game loop:** 5 hearts per lesson (run out → retry), daily-goal ring, streak with day
-  tracking, XP with a combo multiplier, levels with a level-up celebration.
-- **Feel:** Web-Audio sound effects (correct / wrong / complete / level-up, mutable),
-  canvas confetti, spring button presses, screen-transition animation, a custom inline-SVG
-  animated mascot (blinks + bobs), light + dark themes, mobile-first.
-- **Content:** 6 themed units, 48 Kazakh words (Cyrillic incl. ә ғ қ ң ө ұ ү і) each with an
-  emoji, plus example sentences for the build exercise. EN/RU throughout.
+Audio is now **pre-rendered files**, not runtime synthesis. The word list is fixed, so the
+same 206 clips would otherwise be re-synthesised for every user forever, need an API key
+in a static page, and add latency. Generated once, they are 1.8 MB total, served free,
+instant, and work offline.
 
-## Files
-- `index.html` — the entire app (single self-contained file).
-- `schema.sql` — Postgres/Supabase schema the app maps onto 1:1: `decks → units → words`
-  (+ `emoji`) and `sentences`; per-user `profiles`, `srs_state` (strength/ease/interval/due),
-  `sessions`; RLS so content is world-readable and each user's state is private. The app runs
-  on `localStorage` today; moving to Supabase is a data-layer swap, not a rewrite.
+```
+node tools/gen-audio-mac.mjs        # macOS Kazakh system voice "Aru (kk_KZ)" — free, offline
+node tools/gen-audio.mjs            # Azure kk-KZ-AigulNeural / kk-KZ-DauletNeural
+node tools/gen-audio.mjs --manifest-only   # after dropping in hand recordings
+```
 
-## Shipped / still open
-- **Live URL:** DONE — deployed to Vercel (team `justet`) at https://tilashar-virid.vercel.app,
-  public, verified running. Repo: https://github.com/Yerkhat1/tilashar. Redeploy: `vercel deploy --prod`
-  from a checkout, or push to the repo.
-- **Supabase backend:** not wired yet — the app runs on `localStorage`. `schema.sql` is ready to
-  apply; connecting it needs the Supabase project authorised in an interactive session.
-- **Content depth:** 6 units is a real, playable slice, not the full course. More units, the
-  okulyk.kz book material, grammar tips, and native-speaker audio recordings are additive on
-  the same data shape.
-- **Kazakh review:** vocabulary and example sentences are kept to common, high-confidence
-  material; a native read-through is worth doing before any public ship. Audio currently uses
-  the browser speech engine (kk-KZ), which is not available on every device — real recordings
-  would upgrade it.
+`assets/audio-manifest.json` maps each word id to its real filename, so the app never
+guesses at an extension or probes for 404s. **An existing clip is never overwritten**
+without `--force`: drop a native speaker's recording at `audio/<id>.m4a` (or `.mp3`), rerun
+`--manifest-only`, and it replaces the synthesised one, one word at a time.
+
+Resolution order at runtime: a clip in `audio/` → a genuine kk-KZ system voice → **silence**.
+Never an English voice mispronouncing Kazakh. With no audio at all, the speaker button is
+hidden and listening exercises are dropped from the lesson rather than shipped broken.
+
+## Accounts
+`assets/auth.js` is one interface with two providers. Today `LocalProvider` keeps accounts
+and per-user progress in the browser (password stored as a SHA-256 digest). It is a
+device-side stand-in, **not real authentication** — the sign-up screen says so. Swapping in
+`SupabaseProvider` (stubbed in the same file) changes nothing else in the app.
+
+Guest mode works with no account, and signing up afterwards carries the guest's progress
+into the new account.
+
+## Search / SEO
+- `index.html` ships full Russian content in the HTML (not rendered by JS), with title,
+  description, canonical, hreflang, Open Graph + Twitter cards, and JSON-LD for
+  `WebApplication` and `FAQPage`.
+- `robots.txt` allows the landing, disallows `/app.html`, and points at `sitemap.xml`.
+- `manifest.webmanifest` + `favicon.svg` make it installable to a phone home screen.
+- **Google Search Console needs one human step:** get the verification token at
+  search.google.com/search-console (URL prefix → HTML tag), paste it into the clearly
+  marked placeholder in `index.html` `<head>`, redeploy, press Verify, then submit the
+  sitemap.
+
+## Still open
+- **Supabase backend** — not wired. `schema.sql` + `seed.sql` are ready to apply;
+  connecting needs the Supabase project authorised in an interactive session.
+- **Native-speaker read-through** — vocabulary and sentences are common, high-confidence
+  material, but a native pass is worth doing before a wide public push.
+- **Native-voice recordings** — the 206 clips are synthesised. Replacing them with a real
+  speaker is a drop-in, file by file (see "Kazakh audio").
+- **AI features** — deliberately postponed (Ramazan, 2026-09-17: ship without AI first).

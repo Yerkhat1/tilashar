@@ -1,6 +1,7 @@
 -- Tілашар — database schema (Postgres / Supabase)
--- The single-file prototype (index.html) runs on localStorage today and mirrors
--- this exact shape, so moving to the DB is a data-layer swap, not a rewrite.
+-- The app (app.html + assets/) runs on localStorage today and mirrors this exact
+-- shape, so moving to the DB is a data-layer swap, not a rewrite: fill in
+-- SupabaseProvider in assets/auth.js and nothing else changes.
 -- Content lives in decks/units/words; per-user learning state lives in srs_state.
 
 -- ---------- CONTENT (authored once, shared by all learners) ----------
@@ -49,20 +50,26 @@ create table if not exists profiles (
   display_name text,
   ui_lang      text not null default 'en' check (ui_lang in ('en','ru')),
   xp           int  not null default 0,
+  daily_xp     int  not null default 0,   -- XP toward today's goal
+  goal_day     date,                      -- the day daily_xp belongs to
   streak       int  not null default 0,
   last_day     date,
+  theme        text not null default 'auto' check (theme in ('auto','light','dark')),
+  muted        boolean not null default false,
   created_at   timestamptz default now()
 );
 
 -- Per-user, per-word spaced-repetition state (one row per word the user has seen).
 create table if not exists srs_state (
-  user_id     uuid not null references profiles(id) on delete cascade,
-  word_id     text not null references words(id) on delete cascade,
-  strength    int  not null default 0 check (strength between 0 and 5), -- >=3 = learned
-  seen_count  int  not null default 0,
-  miss_count  int  not null default 0,
-  due_at      timestamptz,               -- next review time (cross-session SRS)
-  updated_at  timestamptz default now(),
+  user_id       uuid not null references profiles(id) on delete cascade,
+  word_id       text not null references words(id) on delete cascade,
+  strength      int  not null default 0 check (strength between 0 and 6), -- >=3 = learned
+  ease          numeric(3,2) not null default 2.30 check (ease between 1.30 and 3.20),
+  interval_days int  not null default 0,  -- SM-2 interval; 0 = relearn today
+  seen_count    int  not null default 0,
+  miss_count    int  not null default 0,
+  due_at        timestamptz,              -- next review time (cross-session SRS)
+  updated_at    timestamptz default now(),
   primary key (user_id, word_id)
 );
 create index if not exists srs_due_idx on srs_state(user_id, due_at);

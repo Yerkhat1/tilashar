@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="15" fill="#00A6D6"/>
+  <rect y="54" width="64" height="10" rx="5" fill="#0083AB"/>
+  <text x="32" y="44" font-family="Nunito,Helvetica,Arial,sans-serif" font-size="38"
+        font-weight="900" fill="#ffffff" text-anchor="middle">Т</text>
+  <circle cx="49" cy="17" r="6" fill="#FFC53D"/>
+</svg>
