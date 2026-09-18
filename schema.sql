@@ -3,6 +3,12 @@
 -- shape, so moving to the DB is a data-layer swap, not a rewrite: fill in
 -- SupabaseProvider in assets/auth.js and nothing else changes.
 -- Content lives in decks/units/words; per-user learning state lives in srs_state.
+--
+-- ORDER MATTERS: run this file, THEN seed.sql. srs_state.word_id is a foreign
+-- key into words, so with an unseeded words table every single progress write
+-- fails. Seeding is required, not optional.
+--
+-- Both files are safe to re-run.
 
 -- ---------- CONTENT (authored once, shared by all learners) ----------
 create table if not exists decks (
@@ -86,6 +92,7 @@ create table if not exists sessions (
 );
 
 -- ---------- ROW LEVEL SECURITY (Supabase) ----------
+-- Re-runnable: every policy is dropped before it is created.
 -- Content is world-readable; user state is private to its owner.
 alter table decks     enable row level security;
 alter table units     enable row level security;
@@ -95,11 +102,18 @@ alter table profiles  enable row level security;
 alter table srs_state enable row level security;
 alter table sessions  enable row level security;
 
+drop policy if exists "content readable" on decks;
 create policy "content readable" on decks     for select using (true);
+drop policy if exists "units readable" on units;
 create policy "units readable"   on units     for select using (true);
+drop policy if exists "words readable" on words;
 create policy "words readable"   on words     for select using (true);
+drop policy if exists "sents readable" on sentences;
 create policy "sents readable"   on sentences for select using (true);
 
+drop policy if exists "own profile" on profiles;
 create policy "own profile"   on profiles  for all using (auth.uid() = id)         with check (auth.uid() = id);
+drop policy if exists "own srs" on srs_state;
 create policy "own srs"        on srs_state for all using (auth.uid() = user_id)    with check (auth.uid() = user_id);
+drop policy if exists "own sessions" on sessions;
 create policy "own sessions"   on sessions  for all using (auth.uid() = user_id)    with check (auth.uid() = user_id);

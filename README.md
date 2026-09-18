@@ -102,9 +102,27 @@ into the new account.
   marked placeholder in `index.html` `<head>`, redeploy, press Verify, then submit the
   sitemap.
 
+## Turning on the backend (Supabase)
+The app ships working, on-device. Four steps switch it to real accounts with progress
+synced across devices; nothing in the app code changes.
+
+1. **Create the project** at supabase.com (free tier is plenty).
+2. **SQL Editor → run `schema.sql`**, then **run `seed.sql`**. In that order, and seed is
+   required: `srs_state.word_id` is a foreign key into `words`, so with an empty `words`
+   table every progress write fails. Both files re-run safely.
+3. **Project Settings → API** → copy *Project URL* and the *anon / public* key into
+   `assets/supabase-config.js`. The anon key is meant to be public; Row Level Security is
+   what protects the data. Never put the `service_role` key there.
+4. **Push.** Vercel redeploys from `main` on its own.
+
+`Auth.provider` in the browser console reports `"supabase"` once it is live. If the key is
+wrong or the CDN is blocked, the app logs a warning and keeps running on-device rather
+than breaking.
+
+Authentication → Providers → Email: if "Confirm email" is on, a new account has to click
+the link before signing in. The app shows that as its own message.
+
 ## Still open
-- **Supabase backend** — not wired. `schema.sql` + `seed.sql` are ready to apply;
-  connecting needs the Supabase project authorised in an interactive session.
 - **Native-speaker read-through** — vocabulary and sentences are common, high-confidence
   material, but a native pass is worth doing before a wide public push.
 - **Native-voice recordings** — the 206 clips are synthesised. Replacing them with a real
