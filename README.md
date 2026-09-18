@@ -32,6 +32,7 @@ vercel.json                content-type + cache headers for the audio
 schema.sql                 Postgres/Supabase schema the app maps onto 1:1
 seed.sql                   the whole course as SQL — GENERATED, see tools/gen-seed.js
 tools/gen-seed.js          regenerates seed.sql from content.js
+tools/test-auth.mjs        tests for the auth/progress layer (node tools/test-auth.mjs)
 robots.txt sitemap.xml manifest.webmanifest favicon.svg og.png
 ```
 
@@ -114,6 +115,11 @@ synced across devices; nothing in the app code changes.
    `assets/supabase-config.js`. The anon key is meant to be public; Row Level Security is
    what protects the data. Never put the `service_role` key there.
 4. **Push.** Vercel redeploys from `main` on its own.
+
+`node tools/test-auth.mjs` covers provider selection, the state↔row mapping, the
+changed-rows-only diff, debouncing and guest adoption against a stub client — 31 checks.
+It does **not** prove the network contract; only a live project does that, so run through
+sign up → a lesson → sign in on another device once the keys are in.
 
 `Auth.provider` in the browser console reports `"supabase"` once it is live. If the key is
 wrong or the CDN is blocked, the app logs a warning and keeps running on-device rather
