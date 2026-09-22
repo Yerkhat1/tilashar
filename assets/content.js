@@ -4,6 +4,10 @@
    Supabase is a data-layer swap, not a rewrite.
    NOTE: vocabulary is common, high-frequency Kazakh. A native-speaker
    read-through is still on the list before a wide public push.
+
+   noPic: true — this word never becomes a "which word is this?" question.
+   A picture cannot honestly say "Thursday", "eighty" or "welcome", and two
+   words that would share a picture make a correct answer look wrong.
    ===================================================================== */
 const UNITS = [
  {id:"greetings",icon:"👋",name:{en:"Greetings",ru:"Приветствия"},words:[
@@ -26,14 +30,14 @@ const UNITS = [
    sents:[{kk:"Бір ит",en:["One","dog"],ru:["Одна","собака"]}]},
 
  {id:"phrases",icon:"💬",name:{en:"Everyday phrases",ru:"Повседневные фразы"},words:[
-   {kk:"Қайырлы таң",en:"good morning",ru:"доброе утро",e:"🌅"},
-   {kk:"Қайырлы кеш",en:"good evening",ru:"добрый вечер",e:"🌆"},
-   {kk:"Өтінемін",en:"please",ru:"пожалуйста",e:"🤲"},
-   {kk:"Түсінбедім",en:"I don't understand",ru:"я не понял",e:"🤷"},
-   {kk:"Менің атым",en:"my name is",ru:"меня зовут",e:"🪪"},
-   {kk:"Кездескенше",en:"see you",ru:"до встречи",e:"👋"},
-   {kk:"Қош келдіңіз",en:"welcome",ru:"добро пожаловать",e:"🚪"},
-   {kk:"Ештеңе етпейді",en:"you're welcome",ru:"не за что",e:"🙂"}],
+   {kk:"Қайырлы таң",en:"good morning",ru:"доброе утро",e:"🌅",noPic:true},
+   {kk:"Қайырлы кеш",en:"good evening",ru:"добрый вечер",e:"🌆",noPic:true},
+   {kk:"Өтінемін",en:"please",ru:"пожалуйста",e:"🤲",noPic:true},
+   {kk:"Түсінбедім",en:"I don't understand",ru:"я не понял",e:"🤷",noPic:true},
+   {kk:"Менің атым",en:"my name is",ru:"меня зовут",e:"🪪",noPic:true},
+   {kk:"Кездескенше",en:"see you",ru:"до встречи",e:"👋",noPic:true},
+   {kk:"Қош келдіңіз",en:"welcome",ru:"добро пожаловать",e:"🚪",noPic:true},
+   {kk:"Ештеңе етпейді",en:"you're welcome",ru:"не за что",e:"🙂",noPic:true}],
    sents:[{kk:"Менің атым Айдос",en:["My","name","is","Aidos"],ru:["Меня","зовут","Айдос"]}]},
 
  {id:"food",icon:"🍞",name:{en:"Food",ru:"Еда"},words:[
@@ -77,7 +81,7 @@ const UNITS = [
    {kk:"Үй",en:"house",ru:"дом",e:"🏠"},{kk:"Есік",en:"door",ru:"дверь",e:"🚪"},
    {kk:"Терезе",en:"window",ru:"окно",e:"🪟"},{kk:"Үстел",en:"table",ru:"стол",e:"🪑"},
    {kk:"Орындық",en:"chair",ru:"стул",e:"💺"},{kk:"Төсек",en:"bed",ru:"кровать",e:"🛏️"},
-   {kk:"Бөлме",en:"room",ru:"комната",e:"🚪"},{kk:"Кілем",en:"carpet",ru:"ковёр",e:"🧶"},
+   {kk:"Бөлме",en:"room",ru:"комната",e:"🛋️"},{kk:"Кілем",en:"carpet",ru:"ковёр",e:"🧶"},
    {kk:"Шам",en:"lamp",ru:"лампа",e:"💡"},{kk:"Кілт",en:"key",ru:"ключ",e:"🔑"}],
    sents:[{kk:"Бұл менің үйім",en:["This","is","my","house"],ru:["Это","мой","дом"]}]},
 
@@ -91,10 +95,10 @@ const UNITS = [
    sents:[{kk:"Бүгін жақсы күн",en:["Today","is","a","good","day"],ru:["Сегодня","хороший","день"]}]},
 
  {id:"weekdays",icon:"📅",name:{en:"Days of the week",ru:"Дни недели"},words:[
-   {kk:"Дүйсенбі",en:"Monday",ru:"понедельник",e:"1️⃣"},{kk:"Сейсенбі",en:"Tuesday",ru:"вторник",e:"2️⃣"},
-   {kk:"Сәрсенбі",en:"Wednesday",ru:"среда",e:"3️⃣"},{kk:"Бейсенбі",en:"Thursday",ru:"четверг",e:"4️⃣"},
-   {kk:"Жұма",en:"Friday",ru:"пятница",e:"5️⃣"},{kk:"Сенбі",en:"Saturday",ru:"суббота",e:"6️⃣"},
-   {kk:"Жексенбі",en:"Sunday",ru:"воскресенье",e:"7️⃣"}],
+   {kk:"Дүйсенбі",en:"Monday",ru:"понедельник",e:"1️⃣",noPic:true},{kk:"Сейсенбі",en:"Tuesday",ru:"вторник",e:"2️⃣",noPic:true},
+   {kk:"Сәрсенбі",en:"Wednesday",ru:"среда",e:"3️⃣",noPic:true},{kk:"Бейсенбі",en:"Thursday",ru:"четверг",e:"4️⃣",noPic:true},
+   {kk:"Жұма",en:"Friday",ru:"пятница",e:"5️⃣",noPic:true},{kk:"Сенбі",en:"Saturday",ru:"суббота",e:"6️⃣",noPic:true},
+   {kk:"Жексенбі",en:"Sunday",ru:"воскресенье",e:"7️⃣",noPic:true}],
    sents:[{kk:"Бүгін жұма",en:["Today","is","Friday"],ru:["Сегодня","пятница"]}]},
 
  {id:"nature",icon:"🌳",name:{en:"Nature",ru:"Природа"},words:[
@@ -111,7 +115,7 @@ const UNITS = [
    {kk:"Қалам",en:"pen",ru:"ручка",e:"🖊️"},{kk:"Дәптер",en:"notebook",ru:"тетрадь",e:"📓"},
    {kk:"Мұғалім",en:"teacher",ru:"учитель",e:"👩‍🏫"},{kk:"Оқушы",en:"pupil",ru:"ученик",e:"🧑‍🎓"},
    {kk:"Сабақ",en:"lesson",ru:"урок",e:"📝"},{kk:"Тақта",en:"board",ru:"доска",e:"🧑‍🏫"},
-   {kk:"Сөздік",en:"dictionary",ru:"словарь",e:"📚"},{kk:"Сынып",en:"class",ru:"класс",e:"🪑"}],
+   {kk:"Сөздік",en:"dictionary",ru:"словарь",e:"📚"},{kk:"Сынып",en:"class",ru:"класс",e:"🪑",noPic:true}],
    sents:[{kk:"Мен кітап оқимын",en:["I","read","a","book"],ru:["Я","читаю","книгу"]}]},
 
  {id:"city",icon:"🏙️",name:{en:"City & transport",ru:"Город и транспорт"},words:[
@@ -133,7 +137,7 @@ const UNITS = [
  {id:"verbs",icon:"🏃",name:{en:"Verbs",ru:"Глаголы"},words:[
    {kk:"Бару",en:"to go",ru:"идти",e:"🚶"},{kk:"Келу",en:"to come",ru:"приходить",e:"🔙"},
    {kk:"Жеу",en:"to eat",ru:"есть",e:"🍽️"},{kk:"Ішу",en:"to drink",ru:"пить",e:"🥤"},
-   {kk:"Оқу",en:"to read",ru:"читать",e:"📖"},{kk:"Жазу",en:"to write",ru:"писать",e:"✍️"},
+   {kk:"Оқу",en:"to read",ru:"читать",e:"📖",noPic:true},{kk:"Жазу",en:"to write",ru:"писать",e:"✍️"},
    {kk:"Сөйлеу",en:"to speak",ru:"говорить",e:"💬"},{kk:"Көру",en:"to see",ru:"видеть",e:"👀"},
    {kk:"Білу",en:"to know",ru:"знать",e:"🧠"},{kk:"Ұйықтау",en:"to sleep",ru:"спать",e:"😴"}],
    sents:[{kk:"Мен мектепке барамын",en:["I","go","to","school"],ru:["Я","иду","в","школу"]}]},
@@ -154,7 +158,7 @@ const UNITS = [
    sents:[{kk:"Менің әкем дәрігер",en:["My","father","is","a","doctor"],ru:["Мой","папа","врач"]}]},
 
  {id:"fruits",icon:"🍇",name:{en:"Fruit & vegetables",ru:"Фрукты и овощи"},words:[
-   {kk:"Жеміс",en:"fruit",ru:"фрукт",e:"🍇"},{kk:"Өрік",en:"apricot",ru:"абрикос",e:"🍑"},
+   {kk:"Жеміс",en:"fruit",ru:"фрукт",e:"🍇",noPic:true},{kk:"Өрік",en:"apricot",ru:"абрикос",e:"🍑"},
    {kk:"Жүзім",en:"grapes",ru:"виноград",e:"🍇"},{kk:"Қарбыз",en:"watermelon",ru:"арбуз",e:"🍉"},
    {kk:"Қауын",en:"melon",ru:"дыня",e:"🍈"},{kk:"Сәбіз",en:"carrot",ru:"морковь",e:"🥕"},
    {kk:"Картоп",en:"potato",ru:"картофель",e:"🥔"},{kk:"Пияз",en:"onion",ru:"лук",e:"🧅"},
@@ -162,12 +166,12 @@ const UNITS = [
    sents:[{kk:"Қарбыз тәтті",en:["The","watermelon","is","sweet"],ru:["Арбуз","сладкий"]}]},
 
  {id:"bignumbers",icon:"💯",name:{en:"Bigger numbers",ru:"Большие числа"},words:[
-   {kk:"Он бір",en:"eleven",ru:"одиннадцать",e:"1️⃣"},{kk:"Жиырма",en:"twenty",ru:"двадцать",e:"2️⃣"},
-   {kk:"Отыз",en:"thirty",ru:"тридцать",e:"3️⃣"},{kk:"Қырық",en:"forty",ru:"сорок",e:"4️⃣"},
-   {kk:"Елу",en:"fifty",ru:"пятьдесят",e:"5️⃣"},{kk:"Алпыс",en:"sixty",ru:"шестьдесят",e:"6️⃣"},
-   {kk:"Жетпіс",en:"seventy",ru:"семьдесят",e:"7️⃣"},{kk:"Сексен",en:"eighty",ru:"восемьдесят",e:"8️⃣"},
-   {kk:"Тоқсан",en:"ninety",ru:"девяносто",e:"9️⃣"},{kk:"Жүз",en:"a hundred",ru:"сто",e:"💯"},
-   {kk:"Мың",en:"a thousand",ru:"тысяча",e:"🔢"}],
+   {kk:"Он бір",en:"eleven",ru:"одиннадцать",e:"1️⃣",noPic:true},{kk:"Жиырма",en:"twenty",ru:"двадцать",e:"2️⃣",noPic:true},
+   {kk:"Отыз",en:"thirty",ru:"тридцать",e:"3️⃣",noPic:true},{kk:"Қырық",en:"forty",ru:"сорок",e:"4️⃣",noPic:true},
+   {kk:"Елу",en:"fifty",ru:"пятьдесят",e:"5️⃣",noPic:true},{kk:"Алпыс",en:"sixty",ru:"шестьдесят",e:"6️⃣",noPic:true},
+   {kk:"Жетпіс",en:"seventy",ru:"семьдесят",e:"7️⃣",noPic:true},{kk:"Сексен",en:"eighty",ru:"восемьдесят",e:"8️⃣",noPic:true},
+   {kk:"Тоқсан",en:"ninety",ru:"девяносто",e:"9️⃣",noPic:true},{kk:"Жүз",en:"a hundred",ru:"сто",e:"💯",noPic:true},
+   {kk:"Мың",en:"a thousand",ru:"тысяча",e:"🔢",noPic:true}],
    sents:[{kk:"Менде жүз теңге бар",en:["I","have","a","hundred","tenge"],ru:["У","меня","сто","тенге"]}]},
 ];
 

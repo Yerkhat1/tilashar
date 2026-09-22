@@ -194,7 +194,7 @@ insert into words (id,unit_id,kk,en,ru,emoji,ord) values ('home:4','home','Ор�
   on conflict (id) do update set kk=excluded.kk, en=excluded.en, ru=excluded.ru, emoji=excluded.emoji, ord=excluded.ord;
 insert into words (id,unit_id,kk,en,ru,emoji,ord) values ('home:5','home','Төсек','bed','кровать','🛏️',5)
   on conflict (id) do update set kk=excluded.kk, en=excluded.en, ru=excluded.ru, emoji=excluded.emoji, ord=excluded.ord;
-insert into words (id,unit_id,kk,en,ru,emoji,ord) values ('home:6','home','Бөлме','room','комната','🚪',6)
+insert into words (id,unit_id,kk,en,ru,emoji,ord) values ('home:6','home','Бөлме','room','комната','🛋️',6)
   on conflict (id) do update set kk=excluded.kk, en=excluded.en, ru=excluded.ru, emoji=excluded.emoji, ord=excluded.ord;
 insert into words (id,unit_id,kk,en,ru,emoji,ord) values ('home:7','home','Кілем','carpet','ковёр','🧶',7)
   on conflict (id) do update set kk=excluded.kk, en=excluded.en, ru=excluded.ru, emoji=excluded.emoji, ord=excluded.ord;

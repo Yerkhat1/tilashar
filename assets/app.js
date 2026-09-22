@@ -330,9 +330,17 @@ function renderHome(){
 }
 
 /* ---------------- lesson engine ---------------- */
-/* "listen" is impossible with no Kazakh audio — drop it rather than ship a
-   silent or mispronounced exercise. */
-const kinds = (w, list) => canSpeak(w.id) ? list : list.filter(k => k !== "listen");
+/* Drop any exercise this particular word cannot answer honestly:
+     · "listen"  — there is no Kazakh audio for it
+     · "picture" — its emoji cannot single the word out (w.noPic), so a
+                   correct answer could be marked wrong
+   Never return an empty list. */
+function kinds(w, list){
+  const usable = list.filter(k =>
+    !(k === "listen" && !canSpeak(w.id)) &&
+    !(k === "picture" && w.noPic));
+  return usable.length ? usable : ["mc"];
+}
 function buildLesson(u){
   const due = u.words.filter(w => { const c = srs(w.id); return c.str < MASTER || c.due <= now(); });
   const focus = (due.length ? due : u.words).slice(0, 7);
@@ -438,6 +446,22 @@ function revealAnswers(correctIdx, pickedIdx){
   });
 }
 
+/* ---------------- sentence grading ----------------
+   A sentence is graded on its WORDS. Whether the learner placed the "!" and
+   "?" tiles is not what we are teaching, and failing a correct translation
+   over a punctuation tile tells the student their right answer is wrong —
+   and costs them a heart for it. Word order and word choice still count.
+   (Found in play 2026-09-23: "Hello How are you" was marked wrong against
+   "Hello ! How are you ?".) */
+const sentenceKey = tiles => tiles
+  .map(t => String(t).toLowerCase().trim())
+  .filter(t => t && !/^[^\p{L}\p{N}]+$/u.test(t))
+  .join(" ");
+
+/* "Hello ! How are you ?" -> "Hello! How are you?" for anything we show. */
+const prettySentence = tiles =>
+  tiles.join(" ").replace(/\s+([^\p{L}\p{N}\s])/gu, "$1").trim();
+
 /* ---------------- exercises ---------------- */
 function exIntro(item){
   const w = item.w;
@@ -489,7 +513,9 @@ function exListen(item){
 }
 function exPicture(item){
   const w = item.w;
-  const opts = shuffle([w, ...sampleWords(3,w)]);
+  // A distractor drawn with the same emoji makes two answers equally right.
+  const pool = shuffle(ALL.filter(x => x !== w && x.e !== w.e)).slice(0, 3);
+  const opts = shuffle([w, ...pool]);
   const ci = opts.indexOf(w);
   $("#stage").innerHTML = `<div class="prompt">${L().picture}</div>
     <div class="bigemoji">${w.e}</div>${answerList(opts.map(o => o.kk))}`;
@@ -570,7 +596,10 @@ function exBuild(item){
     repaint(); cta(L().check, chosen.length > 0, submit);
   });
   cta(L().check, false, null);
-  function submit(){ grade(chosen.map(c => c.t).join(" ") === target.join(" "), target.join(" "), null); }
+  function submit(){
+    const ok = sentenceKey(chosen.map(c => c.t)) === sentenceKey(target);
+    grade(ok, prettySentence(target), null);
+  }
 }
 
 /* ---------------- finish ---------------- */

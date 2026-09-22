@@ -33,6 +33,7 @@ schema.sql                 Postgres/Supabase schema the app maps onto 1:1
 seed.sql                   the whole course as SQL — GENERATED, see tools/gen-seed.js
 tools/gen-seed.js          regenerates seed.sql from content.js
 tools/test-auth.mjs        tests for the auth/progress layer (node tools/test-auth.mjs)
+tools/test-grading.mjs     tests for answer grading + question fairness
 tools/gen-review-sheet.mjs builds REVIEW-kazakh.md, the native-speaker check sheet
 sw.js                      service worker: offline + installable
 REVIEW-kazakh.md           GENERATED — 185 words for a native speaker to confirm
@@ -60,6 +61,14 @@ green for correct, terracotta-red for wrong. Light and dark, phone-first.
 Intro card · multiple choice (kk→meaning) · reverse (meaning→kk) · listening · picture ·
 type-the-translation · match pairs · sentence build. Plus a global **Practice/Review**
 mode that pulls every word whose SRS due date has arrived, across all topics.
+
+**Grading never punishes a correct learner.** A sentence is graded on its words, not on
+whether the punctuation tiles were placed — "Hello How are you" passes against
+"Hello ! How are you ?" — while word order, word choice and extra words still count. A
+picture question is only ever asked for a word whose emoji identifies it alone: 29 words
+carry `noPic` (weekdays, bigger numbers, phrases and a few others) because a picture
+cannot honestly say "Thursday" or "eighty", and distractors never reuse the prompt's
+emoji. `node tools/test-grading.mjs` pins both.
 
 Keyboard: `1`–`4` pick an answer, `Enter` checks and then continues. The numbered badge on
 each answer is the hint. Typing exercises are never hijacked.
