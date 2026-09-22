@@ -15,6 +15,6 @@
    rows. Never put the service_role key here.
    ===================================================================== */
 window.SUPABASE = {
-  url: "",
-  anonKey: "",
+  url: "https://eyivzmavgjaagitihtds.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5aXZ6bWF2Z2phYWdpdGlodGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwOTc4OTYsImV4cCI6MjEwNTY3Mzg5Nn0.GezqsbQOF08en55Byo_UQIczWXEBjhU9xTVuu43I3C4",
 };
