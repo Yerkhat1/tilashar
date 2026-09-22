@@ -14,6 +14,8 @@
      Auth.signUp/signIn/signOut  -> Promise<{user}|{error}>
      Auth.loadProgress()         -> Promise<state>
      Auth.saveProgress(state)    -> void (debounced, fire-and-forget)
+     Auth.logSession(row)        -> void, one finished lesson
+     Auth.loadSessions()         -> Promise<rows>, newest first
      Auth.flush()                -> Promise, force-write pending state
      Auth.adoptGuestProgress()   -> Promise<bool>, carry a guest's work in
    ===================================================================== */
@@ -73,8 +75,15 @@ const Auth = (() => {
     async signOut() { localStorage.removeItem(SKEY); this._user = null; return {}; },
 
     key(u) { return "tilashar.progress." + (u ? u.id : "guest"); },
+    logKey(u) { return "tilashar.sessions." + (u ? u.id : "guest"); },
     async loadProgress() { return readJSON(this.key(this._user), {}); },
     saveProgress(state) { writeJSON(this.key(this._user), state); },
+    logSession(row) {
+      const log = readJSON(this.logKey(this._user), []);
+      log.push({ ...row, at: Date.now() });
+      writeJSON(this.logKey(this._user), log.slice(-200));   // keep it bounded
+    },
+    async loadSessions() { return readJSON(this.logKey(this._user), []); },
     async flush() {},
   };
 
@@ -137,6 +146,21 @@ const Auth = (() => {
       await this.sb.auth.signOut();
       this._user = null; this._lastSrs = {};
       return {};
+    },
+
+    logSession(row) {
+      if (!this._user) { LocalProvider._user = null; LocalProvider.logSession(row); return; }
+      // fire-and-forget: a lost history row must never cost a finished lesson
+      this.sb.from("sessions").insert({
+        user_id: this._user.id, unit_id: row.unitId,
+        correct: row.correct, total: row.total, xp: row.xp,
+      }).then(r => { if (r && r.error) console.warn("[tilashar] session log failed:", r.error.message); });
+    },
+    async loadSessions() {
+      if (!this._user) return [];
+      const { data } = await this.sb.from("sessions").select("*")
+        .eq("user_id", this._user.id).order("finished_at", { ascending: false }).limit(200);
+      return data || [];
     },
 
     async loadProgress() {
@@ -231,6 +255,8 @@ const Auth = (() => {
     signOut: () => P.signOut(),
     loadProgress: () => P.loadProgress(),
     saveProgress: s => P.saveProgress(s),
+    logSession: row => P.logSession(row),
+    loadSessions: () => P.loadSessions(),
     flush: () => P.flush(),
 
     /* A guest's work must survive signing up — otherwise the account costs

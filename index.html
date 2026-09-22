@@ -282,5 +282,11 @@
   document.getElementById("heroMascot").innerHTML = MASCOT_CSS + MASCOT_SVG();
 })();
 </script>
+<script>
+/* Offline + installable. Registered late so it never delays first paint. */
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
 </body>
 </html>

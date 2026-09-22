@@ -33,6 +33,9 @@ schema.sql                 Postgres/Supabase schema the app maps onto 1:1
 seed.sql                   the whole course as SQL — GENERATED, see tools/gen-seed.js
 tools/gen-seed.js          regenerates seed.sql from content.js
 tools/test-auth.mjs        tests for the auth/progress layer (node tools/test-auth.mjs)
+tools/gen-review-sheet.mjs builds REVIEW-kazakh.md, the native-speaker check sheet
+sw.js                      service worker: offline + installable
+REVIEW-kazakh.md           GENERATED — 185 words for a native speaker to confirm
 robots.txt sitemap.xml manifest.webmanifest favicon.svg og.png
 ```
 
@@ -57,6 +60,21 @@ green for correct, terracotta-red for wrong. Light and dark, phone-first.
 Intro card · multiple choice (kk→meaning) · reverse (meaning→kk) · listening · picture ·
 type-the-translation · match pairs · sentence build. Plus a global **Practice/Review**
 mode that pulls every word whose SRS due date has arrived, across all topics.
+
+Keyboard: `1`–`4` pick an answer, `Enter` checks and then continues. The numbered badge on
+each answer is the hint. Typing exercises are never hijacked.
+
+Every finished lesson is recorded (unit, correct, total, XP) — to `sessions` on Supabase, or
+a capped local log otherwise. A review session carries a null unit because it spans all of them.
+
+## Offline and install
+`sw.js` makes the app installable and usable with no connection — a student on the bus
+with no signal still gets the lesson and hears the words. Per file type: HTML is
+network-first so a deploy lands immediately, `assets/` is stale-while-revalidate, `audio/`
+is cache-first (clip bytes never change under a name), and the audio manifest is
+network-first so new clips are noticed. After each home render the app pushes the current
+and next unit's clips into the cache ahead of time. Bump `VERSION` in `sw.js` on any change
+to it; old caches are dropped on activate.
 
 ## Kazakh audio
 `speechSynthesis` was the wrong tool: **no browser ships a kk-KZ voice** (0 of 180 on a
@@ -129,8 +147,10 @@ Authentication → Providers → Email: if "Confirm email" is on, a new account 
 the link before signing in. The app shows that as its own message.
 
 ## Still open
-- **Native-speaker read-through** — vocabulary and sentences are common, high-confidence
-  material, but a native pass is worth doing before a wide public push.
+- **Native-speaker read-through** — the check sheet is built and waiting: `REVIEW-kazakh.md`
+  (regenerate with `node tools/gen-review-sheet.mjs`). 185 words and 21 sentences have not
+  been confirmed by a Kazakh speaker, and a wrong word is worse than a missing one: a
+  missing word is simply not learned, a wrong one is learned wrong.
 - **Native-voice recordings** — the 206 clips are synthesised. Replacing them with a real
   speaker is a drop-in, file by file (see "Kazakh audio").
 - **AI features** — deliberately postponed (Ramazan, 2026-09-17: ship without AI first).

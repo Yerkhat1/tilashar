@@ -259,6 +259,19 @@ function paintTop(){
   av.classList.toggle("avatar--guest", !user);
 }
 
+/* Push the clips a learner is about to need into the offline cache, so the
+   lesson still speaks when the signal drops mid-bus-ride. */
+function prefetchAudio(units){
+  const sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+  if (!sw) return;
+  const urls = [];
+  units.forEach(u => {
+    u.words.forEach(w => { if (AUDIO.files[w.id]) urls.push(audioURL(w.id)); });
+    (u.sents || []).forEach(x => { if (AUDIO.files[x.id]) urls.push(audioURL(x.id)); });
+  });
+  if (urls.length) sw.postMessage({ type: "cache-audio", urls });
+}
+
 /* ---------------- home ---------------- */
 function ringSVG(p, color, size){
   const s = size || 56, r = s/2 - 4, c = 2*Math.PI*r, off = c*(1-p);
@@ -309,6 +322,10 @@ function renderHome(){
     node.onclick = () => { ac(); open ? startLesson(ui) : toast(L().locked); };
     wrap.appendChild(node); path.appendChild(wrap);
   });
+  // the unit they can play now, plus the one after it
+  const openIdx = UNITS.findIndex((u, i) => unitOpen(i) && !unitLearned(u));
+  if (openIdx >= 0) prefetchAudio(UNITS.slice(openIdx, openIdx + 2));
+
   paintTop(); show("scHome");
 }
 
@@ -570,6 +587,7 @@ function finish(){
   $("#cXp").textContent = L().xp; $("#cAcc").textContent = L().acc; $("#cCombo").textContent = L().combo;
   $("#sXp").textContent = "+" + LS.xp; $("#sAcc").textContent = acc + "%"; $("#sCombo").textContent = LS.bestCombo;
   $("#sCont").textContent = L().cont; $("#sCont").onclick = renderHome;
+  Auth.logSession({ unitId: LS.review ? null : LS.u.id, correct: LS.right, total: LS.ans, xp: LS.xp });
   paintTop(); show("scSummary"); sfxDone(); confetti();
   if (after > before) setTimeout(() => levelUp(after), 700);
   newStreak = false;
@@ -703,6 +721,35 @@ $("#btnAuthAction").onclick = async () => {
     await loadState(); applyTheme(); paintAuth(); show("scAuth"); toast(L().signedOut);
   } else { paintAuth(); show("scAuth"); }
 };
+
+/* ---------------- keyboard ----------------
+   The numbered badges on every answer are a promise that the number works.
+   1-4 picks, Enter checks and then continues. Typing is never hijacked. */
+addEventListener("keydown", e => {
+  if ($("#scLesson").classList.contains("hidden")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  const typing = document.activeElement &&
+    (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA");
+
+  // the feedback banner owns Enter while it is open
+  const banner = $("#banner");
+  if (banner.classList.contains("is-open")) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#bCont").click(); }
+    return;
+  }
+  if (typing) return;
+
+  if (/^[1-9]$/.test(e.key)) {
+    const el = $$("#answers .answer")[+e.key - 1];
+    if (el && !el.disabled) { e.preventDefault(); el.click(); }
+    return;
+  }
+  if (e.key === "Enter") {
+    const b = $("#cta");
+    if (b && !b.disabled && b.style.visibility !== "hidden") { e.preventDefault(); b.click(); }
+  }
+});
 
 /* ---------------- global controls ---------------- */
 $$("#langtog button, #langtog2 button").forEach(b => b.onclick = () => {

@@ -55,9 +55,19 @@ function stubSupabase() {
     then(res) {                       // awaiting the builder = run the select
       const rows = name === "srs_state"
         ? [...db.srs_state.values()].filter(r => r.user_id === this._eq[1])
+        : name === "sessions"
+        ? (db.sessions || []).filter(r => r.user_id === this._eq[1])
         : [...db.profiles.values()];
       return Promise.resolve({ data: rows, error: null }).then(res);
     },
+    insert(payload) {
+      const rows = Array.isArray(payload) ? payload : [payload];
+      db.sessions = db.sessions || [];
+      rows.forEach(r => db.sessions.push({ ...r, finished_at: new Date().toISOString() }));
+      return Promise.resolve({ data: rows, error: null });
+    },
+    order() { return this; },
+    limit() { return this; },
     upsert(payload) {
       const rows = Array.isArray(payload) ? payload : [payload];
       if (name === "profiles") { calls.upsertProfiles++; rows.forEach(r => db.profiles.set(r.id, { ...db.profiles.get(r.id), ...r })); }
@@ -204,6 +214,33 @@ console.log("\nwrite efficiency");
   ok("8 rapid answers debounce into 1 write", sb.calls.upsertProfiles - before === 1,
      { writes: sb.calls.upsertProfiles - before });
   ok("last value wins after debounce", sb.db.profiles.get("uuid-1").xp === 107, sb.db.profiles.get("uuid-1").xp);
+}
+
+/* ═════════ 4b. lesson history ═════════ */
+console.log("\nlesson history");
+{
+  const sb = stubSupabase();
+  const { Auth } = makeEnv(sb, CFG);
+  await Auth.init();
+  await Auth.signUp({ name: "R", email: "r@x.kz", password: "test1234" });
+
+  Auth.logSession({ unitId: "greetings", correct: 7, total: 8, xp: 62 });
+  Auth.logSession({ unitId: null, correct: 4, total: 4, xp: 40 });   // cross-unit review
+  await sleep(20);
+
+  const rows = await Auth.loadSessions();
+  ok("both lessons recorded", rows.length === 2, rows.length);
+  ok("unit lesson keeps its unit", rows.some(r => r.unit_id === "greetings" && r.correct === 7 && r.xp === 62), rows);
+  ok("review session has a null unit (matches the nullable FK)", rows.some(r => r.unit_id === null), rows);
+}
+{
+  const { Auth } = makeEnv(stubSupabase(), { url: "", anonKey: "" });
+  await Auth.init();
+  Auth.logSession({ unitId: "food", correct: 5, total: 6, xp: 50 });
+  const rows = await Auth.loadSessions();
+  ok("local provider records history too", rows.length === 1 && rows[0].unitId === "food", rows);
+  for (let i = 0; i < 260; i++) Auth.logSession({ unitId: "food", correct: 1, total: 1, xp: 1 });
+  ok("local history stays bounded at 200", (await Auth.loadSessions()).length === 200, (await Auth.loadSessions()).length);
 }
 
 /* ═════════ 5. guest -> account ═════════ */

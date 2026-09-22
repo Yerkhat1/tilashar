@@ -84,7 +84,7 @@ create index if not exists srs_due_idx on srs_state(user_id, due_at);
 create table if not exists sessions (
   id         bigserial primary key,
   user_id    uuid not null references profiles(id) on delete cascade,
-  unit_id    text not null references units(id),
+  unit_id    text references units(id),   -- null = a cross-unit review session
   correct    int  not null,
   total      int  not null,
   xp         int  not null,
