@@ -11,7 +11,7 @@
      · audio-manifest  network-first  -> new clips must be noticed
    Bump VERSION on any change here; old caches are deleted on activate.
    ===================================================================== */
-const VERSION = "tilashar-v3.1";
+const VERSION = "tilashar-v3.2";
 const SHELL = `${VERSION}-shell`;
 const MEDIA = `${VERSION}-media`;
 

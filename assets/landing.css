@@ -10,9 +10,9 @@ section{padding-block:clamp(52px,8vw,86px);scroll-margin-top:78px}
 /* ── NAV ────────────────────────────────────────────────────────── */
 .nav{position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:3px solid var(--cloud)}
 .nav__in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
-.logo{display:flex;align-items:center;gap:9px;font-weight:900;font-size:1.22rem;letter-spacing:-.03em;color:var(--ink)}
-.logo__mark{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;
-  background:var(--brand);border-bottom:3px solid var(--brand-dk);font-size:1.1rem}
+.logo{display:inline-flex;align-items:center;font-weight:900;font-size:1.34rem;
+  letter-spacing:-.035em;color:var(--ink)}
+.logo:hover{color:var(--brand)}
 .nav__links{display:flex;gap:22px;margin-left:22px}
 .nav__links a{font-weight:800;font-size:.92rem;color:var(--slate)}
 .nav__links a:hover{color:var(--brand)}
