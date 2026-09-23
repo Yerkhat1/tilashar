@@ -145,8 +145,11 @@ synced across devices; nothing in the app code changes.
 
 `node tools/test-auth.mjs` covers provider selection, the state↔row mapping, the
 changed-rows-only diff, debouncing and guest adoption against a stub client — 31 checks.
-It does **not** prove the network contract; only a live project does that, so run through
-sign up → a lesson → sign in on another device once the keys are in.
+It does not prove the network contract on its own — but that was verified against the live
+project on 2026-09-23: sign up → a full Greetings lesson → the device wiped completely
+(no session, no localStorage) → sign in again, and 150 XP, the 1-day streak and all 7
+studied words came back. Profile, `srs_state` and the `sessions` row were each read
+straight out of the database, not taken from the app's word for it.
 
 `Auth.provider` in the browser console reports `"supabase"` once it is live. If the key is
 wrong or the CDN is blocked, the app logs a warning and keeps running on-device rather
@@ -156,6 +159,7 @@ Authentication → Providers → Email: if "Confirm email" is on, a new account 
 the link before signing in. The app shows that as its own message.
 
 ## Still open
+- **Search Console** — the token placeholder in `index.html` is still unfilled.
 - **Native-speaker read-through** — the check sheet is built and waiting: `REVIEW-kazakh.md`
   (regenerate with `node tools/gen-review-sheet.mjs`). 185 words and 21 sentences have not
   been confirmed by a Kazakh speaker, and a wrong word is worse than a missing one: a
