@@ -243,6 +243,48 @@ console.log("\nlesson history");
   ok("local history stays bounded at 200", (await Auth.loadSessions()).length === 200, (await Auth.loadSessions()).length);
 }
 
+/* ═════════ 4c. untouched words are not stored ═════════ */
+console.log("\nonly real work is stored");
+{
+  const sb = stubSupabase();
+  const { Auth } = makeEnv(sb, CFG);
+  await Auth.init();
+  await Auth.signUp({ name: "R", email: "r@x.kz", password: "test1234" });
+
+  // what the app's state really looks like: the home screen's progress rings
+  // touch every word, so most entries exist but hold no work at all
+  const srs = {};
+  for (let i = 0; i < 179; i++) srs["junk:" + i] = { str: 0, ease: 2.3, intv: 0, seen: 0, due: 0 };
+  srs["greetings:0"] = { str: 1, ease: 2.36, intv: 1, seen: 1, due: 9e12 };
+  srs["greetings:1"] = { str: 2, ease: 2.42, intv: 3, seen: 2, due: 9e12 };
+
+  Auth.saveProgress({ lang: "ru", theme: "auto", muted: false, xp: 150, dailyXp: 150,
+                      goalDay: "2026-09-23", streak: 1, lastDay: "2026-09-23", srs });
+  await Auth.flush();
+
+  const rows = [...sb.db.srs_state.values()];
+  ok("only the studied words reach the database", rows.length === 2, rows.length);
+  ok("no zero rows at all", rows.every(r => r.seen_count > 0 || r.strength > 0), rows.length);
+  ok("the profile still lands in full", sb.db.profiles.get("uuid-1").xp === 150);
+
+  // and it stays pruned on the next write
+  srs["greetings:0"].str = 2; srs["greetings:0"].seen = 2;
+  Auth.saveProgress({ lang: "ru", theme: "auto", muted: false, xp: 160, dailyXp: 160,
+                      goalDay: "2026-09-23", streak: 1, lastDay: "2026-09-23", srs });
+  await Auth.flush();
+  ok("a second write sends only the one word that changed", sb.calls.srsRowsSent.at(-1) === 1, sb.calls.srsRowsSent);
+  ok("still no junk after the second write", [...sb.db.srs_state.values()].length === 2);
+}
+{
+  const { Auth, store } = makeEnv(stubSupabase(), { url: "", anonKey: "" });
+  await Auth.init();
+  const srs = { "a:0": { str: 0, ease: 2.3, intv: 0, seen: 0, due: 0 },
+                "a:1": { str: 1, ease: 2.3, intv: 1, seen: 1, due: 9e12 } };
+  Auth.saveProgress({ xp: 10, srs });
+  const saved = JSON.parse(store.get("tilashar.progress.guest"));
+  ok("local storage is pruned too", Object.keys(saved.srs).length === 1 && !!saved.srs["a:1"], saved.srs);
+}
+
 /* ═════════ 5. guest -> account ═════════ */
 console.log("\nguest adoption");
 {

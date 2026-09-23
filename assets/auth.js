@@ -26,6 +26,18 @@ const Auth = (() => {
 
   const readJSON = (k, fb) => { try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch (e) { return fb; } };
   const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  /* srs(id) in the app creates an entry the moment a word is merely LOOKED at
+     — the home screen's progress rings read every word — so the state ends up
+     holding all 185 with seen:0. Only words the learner actually worked on
+     belong in storage; the rest are noise that would be written for every
+     user on their first lesson. */
+  const studied = c => !!c && (c.seen > 0 || c.str > 0 || c.intv > 0);
+  const pruneSrs = srs => {
+    const out = {};
+    for (const [k, v] of Object.entries(srs || {})) if (studied(v)) out[k] = v;
+    return out;
+  };
+
   const uid = () => "u_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   const clean = u => u && { id: u.id, name: u.name, email: u.email };
 
@@ -77,7 +89,7 @@ const Auth = (() => {
     key(u) { return "tilashar.progress." + (u ? u.id : "guest"); },
     logKey(u) { return "tilashar.sessions." + (u ? u.id : "guest"); },
     async loadProgress() { return readJSON(this.key(this._user), {}); },
-    saveProgress(state) { writeJSON(this.key(this._user), state); },
+    saveProgress(state) { writeJSON(this.key(this._user), { ...state, srs: pruneSrs(state.srs) }); },
     logSession(row) {
       const log = readJSON(this.logKey(this._user), []);
       log.push({ ...row, at: Date.now() });
@@ -206,7 +218,8 @@ const Auth = (() => {
       if (!state || !this._user) return;
       const id = this._user.id;
       const changed = [];
-      for (const [wordId, c] of Object.entries(state.srs || {})) {
+      const srs = pruneSrs(state.srs);
+      for (const [wordId, c] of Object.entries(srs)) {
         const p = this._lastSrs[wordId];
         if (p && p.str === c.str && p.intv === c.intv && p.seen === c.seen && p.due === c.due && p.ease === c.ease) continue;
         changed.push({
@@ -225,7 +238,7 @@ const Auth = (() => {
       const results = await Promise.all(jobs);
       const failed = results.find(r => r && r.error);
       if (failed) { console.warn("[tilashar] progress save failed:", failed.error.message); return; }
-      this._lastSrs = JSON.parse(JSON.stringify(state.srs || {}));
+      this._lastSrs = JSON.parse(JSON.stringify(srs));
     },
   };
 
